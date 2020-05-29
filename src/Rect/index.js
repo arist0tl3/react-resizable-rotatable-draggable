@@ -37,9 +37,9 @@ export default class Rect extends PureComponent {
   startDrag = (e) => {
     let { clientX: startX, clientY: startY } = e
     this.props.onDragStart && this.props.onDragStart()
-    this._isMouseDown = true
+    this._isPointerDown = true
     const onMove = (e) => {
-      if (!this._isMouseDown) return // patch: fix windows press win key during mouseup issue
+      if (!this._isPointerDown) return // patch: fix windows press win key during pointerup issue
       e.stopImmediatePropagation()
       const { clientX, clientY } = e
       const deltaX = clientX - startX
@@ -49,14 +49,14 @@ export default class Rect extends PureComponent {
       startY = clientY
     }
     const onUp = () => {
-      document.removeEventListener('mousemove', onMove)
-      document.removeEventListener('mouseup', onUp)
-      if (!this._isMouseDown) return
-      this._isMouseDown = false
+      document.removeEventListener('pointermove', onMove)
+      document.removeEventListener('pointerup', onUp)
+      if (!this._isPointerDown) return
+      this._isPointerDown = false
       this.props.onDragEnd && this.props.onDragEnd()
     }
-    document.addEventListener('mousemove', onMove)
-    document.addEventListener('mouseup', onUp)
+    document.addEventListener('pointermove', onMove)
+    document.addEventListener('pointerup', onUp)
   }
 
   // Rotate
@@ -74,9 +74,9 @@ export default class Rect extends PureComponent {
       y: clientY - center.y
     }
     this.props.onRotateStart && this.props.onRotateStart()
-    this._isMouseDown = true
+    this._isPointerDown = true
     const onMove = (e) => {
-      if (!this._isMouseDown) return // patch: fix windows press win key during mouseup issue
+      if (!this._isPointerDown) return // patch: fix windows press win key during pointerup issue
       e.stopImmediatePropagation()
       const { clientX, clientY } = e
       const rotateVector = {
@@ -87,14 +87,14 @@ export default class Rect extends PureComponent {
       this.props.onRotate(angle, startAngle)
     }
     const onUp = () => {
-      document.removeEventListener('mousemove', onMove)
-      document.removeEventListener('mouseup', onUp)
-      if (!this._isMouseDown) return
-      this._isMouseDown = false
+      document.removeEventListener('pointermove', onMove)
+      document.removeEventListener('pointerup', onUp)
+      if (!this._isPointerDown) return
+      this._isPointerDown = false
       this.props.onRotateEnd && this.props.onRotateEnd()
     }
-    document.addEventListener('mousemove', onMove)
-    document.addEventListener('mouseup', onUp)
+    document.addEventListener('pointermove', onMove)
+    document.addEventListener('pointerup', onUp)
   }
 
   // Resize
@@ -106,9 +106,9 @@ export default class Rect extends PureComponent {
     const rect = { width, height, centerX, centerY, rotateAngle }
     const type = e.target.getAttribute('class').split(' ')[ 0 ]
     this.props.onResizeStart && this.props.onResizeStart()
-    this._isMouseDown = true
+    this._isPointerDown = true
     const onMove = (e) => {
-      if (!this._isMouseDown) return // patch: fix windows press win key during mouseup issue
+      if (!this._isPointerDown) return // patch: fix windows press win key during pointerup issue
       e.stopImmediatePropagation()
       const { clientX, clientY } = e
       const deltaX = clientX - startX
@@ -121,14 +121,14 @@ export default class Rect extends PureComponent {
 
     const onUp = () => {
       document.body.style.cursor = 'auto'
-      document.removeEventListener('mousemove', onMove)
-      document.removeEventListener('mouseup', onUp)
-      if (!this._isMouseDown) return
-      this._isMouseDown = false
+      document.removeEventListener('pointermove', onMove)
+      document.removeEventListener('pointerup', onUp)
+      if (!this._isPointerDown) return
+      this._isPointerDown = false
       this.props.onResizeEnd && this.props.onResizeEnd()
     }
-    document.addEventListener('mousemove', onMove)
-    document.addEventListener('mouseup', onUp)
+    document.addEventListener('pointermove', onMove)
+    document.addEventListener('pointerup', onUp)
   }
 
   render () {
@@ -154,13 +154,13 @@ export default class Rect extends PureComponent {
     return (
       <StyledRect
         ref={this.setElementRef}
-        onMouseDown={this.startDrag}
+        onPointerDown={this.startDrag}
         className="rect single-resizer"
         style={style}
       >
         {
           rotatable &&
-          <div className="rotate" onMouseDown={this.startRotate}>
+          <div className="rotate" onPointerDown={this.startRotate}>
             <svg width="14" height="14" xmlns="http://www.w3.org/2000/svg">
               <path
                 d="M10.536 3.464A5 5 0 1 0 11 10l1.424 1.425a7 7 0 1 1-.475-9.374L13.659.34A.2.2 0 0 1 14 .483V5.5a.5.5 0 0 1-.5.5H8.483a.2.2 0 0 1-.142-.341l2.195-2.195z"
@@ -175,7 +175,7 @@ export default class Rect extends PureComponent {
           direction.map(d => {
             const cursor = `${getCursor(rotateAngle + parentRotateAngle, d)}-resize`
             return (
-              <div key={d} style={{ cursor }} className={`${zoomableMap[ d ]} resizable-handler`} onMouseDown={(e) => this.startResize(e, cursor)} />
+              <div key={d} style={{ cursor }} className={`${zoomableMap[ d ]} resizable-handler`} onPointerDown={(e) => this.startResize(e, cursor)} />
             )
           })
         }
