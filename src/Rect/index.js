@@ -35,10 +35,12 @@ export default class Rect extends PureComponent {
 
   // Drag
   startDrag = (e) => {
+    e.preventDefault();
     let { clientX: startX, clientY: startY } = e
     this.props.onDragStart && this.props.onDragStart()
     this._isPointerDown = true
     const onMove = (e) => {
+      e.preventDefault();
       if (!this._isPointerDown) return // patch: fix windows press win key during pointerup issue
       e.stopImmediatePropagation()
       const { clientX, clientY } = e
@@ -48,7 +50,8 @@ export default class Rect extends PureComponent {
       startX = clientX
       startY = clientY
     }
-    const onUp = () => {
+    const onUp = (e) => {
+      e.preventDefault();
       document.removeEventListener('pointermove', onMove)
       document.removeEventListener('pointerup', onUp)
       if (!this._isPointerDown) return
@@ -61,6 +64,7 @@ export default class Rect extends PureComponent {
 
   // Rotate
   startRotate = (e) => {
+    e.preventDefault();
     if (e.button !== 0) return
     const { clientX, clientY } = e
     const { styles: { transform: { rotateAngle: startAngle } } } = this.props
@@ -76,6 +80,7 @@ export default class Rect extends PureComponent {
     this.props.onRotateStart && this.props.onRotateStart()
     this._isPointerDown = true
     const onMove = (e) => {
+      e.preventDefault();
       if (!this._isPointerDown) return // patch: fix windows press win key during pointerup issue
       e.stopImmediatePropagation()
       const { clientX, clientY } = e
@@ -86,7 +91,8 @@ export default class Rect extends PureComponent {
       const angle = getAngle(startVector, rotateVector)
       this.props.onRotate(angle, startAngle)
     }
-    const onUp = () => {
+    const onUp = (e) => {
+      e.preventDefault();
       document.removeEventListener('pointermove', onMove)
       document.removeEventListener('pointerup', onUp)
       if (!this._isPointerDown) return
@@ -99,6 +105,7 @@ export default class Rect extends PureComponent {
 
   // Resize
   startResize = (e, cursor) => {
+    e.preventDefault();
     if (e.button !== 0) return
     document.body.style.cursor = cursor
     const { styles: { position: { centerX, centerY }, size: { width, height }, transform: { rotateAngle } } } = this.props
@@ -108,6 +115,7 @@ export default class Rect extends PureComponent {
     this.props.onResizeStart && this.props.onResizeStart()
     this._isPointerDown = true
     const onMove = (e) => {
+      e.preventDefault();
       if (!this._isPointerDown) return // patch: fix windows press win key during pointerup issue
       e.stopImmediatePropagation()
       const { clientX, clientY } = e
@@ -119,7 +127,8 @@ export default class Rect extends PureComponent {
       this.props.onResize(deltaL, alpha, rect, type, isShiftKey)
     }
 
-    const onUp = () => {
+    const onUp = (e) => {
+      e.preventDefault();
       document.body.style.cursor = 'auto'
       document.removeEventListener('pointermove', onMove)
       document.removeEventListener('pointerup', onUp)
